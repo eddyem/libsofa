@@ -25,9 +25,9 @@ void iauP2pv(double p[3], double pv[2][3])
 **
 **  This revision:  2013 June 18
 **
-**  SOFA release 2015-02-09
+**  SOFA release 2019-07-22
 **
-**  Copyright (C) 2015 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2019 IAU SOFA Board.  See notes at end.
 */
 {
    iauCp(p, pv[0]);
@@ -37,7 +37,7 @@ void iauP2pv(double p[3], double pv[2][3])
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2015
+**  Copyright (C) 2019
 **  Standards Of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **

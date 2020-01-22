@@ -17,11 +17,11 @@ static int verbose = 0;
 **
 **  All messages go to stdout.
 **
-**  This revision:  2015 January 30
+**  This revision:  2017 December 6
 **
-**  SOFA release 2015-02-09
+**  SOFA release 2019-07-22
 **
-**  Copyright (C) 2015 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2019 IAU SOFA Board.  See notes at end.
 */
 
 static void viv(int ival, int ivalok,
@@ -79,14 +79,14 @@ static void vvd(double val, double valok, double dval,
 **  Given and returned:
 **     status   int          set to TRUE if test fails
 **
-**  This revision:  2013 August 7
+**  This revision:  2016 April 21
 */
 {
    double a, f;   /* absolute and fractional error */
 
 
    a = val - valok;
-   if (fabs(a) > dval) {
+   if (a != 0.0 && fabs(a) > fabs(dval)) {
       f = fabs(valok / a);
       *status = 1;
       printf("%s failed: %s want %.20g got %.20g (1/%.3g)\n",
@@ -196,6 +196,36 @@ static void t_ab(int *status)
 
 }
 
+static void t_ae2hd(int *status)
+/*
+**  - - - - - - - -
+**   t _ a e 2 h d
+**  - - - - - - - -
+**
+**  Test iauAe2hd function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauAe2hd and vvd
+**
+**  This revision:  2017 October 21
+*/
+{
+   double a, e, p, h, d;
+
+
+   a = 5.5;
+   e = 1.1;
+   p = 0.7;
+
+   iauAe2hd(a, e, p, &h, &d);
+
+   vvd(h, 0.5933291115507309663, 1e-14, "iauAe2hd", "h", status);
+   vvd(d, 0.9613934761647817620, 1e-14, "iauAe2hd", "d", status);
+
+}
+
 static void t_af2a(int *status)
 /*
 **  - - - - - - -
@@ -274,7 +304,7 @@ static void t_apcg(int *status)
 **
 **  Called:  iauApcg, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, ebpv[2][3], ehp[3];
@@ -311,13 +341,13 @@ static void t_apcg(int *status)
                      "iauApcg", "eh(3)", status);
    vvd(astrom.em, 1.010465295811013146, 1e-12,
                   "iauApcg", "em", status);
-   vvd(astrom.v[0], 0.4289638897813379954e-4, 1e-16,
-                    "iauApcg", "v(1_", status);
-   vvd(astrom.v[1], 0.8115034021720941898e-4, 1e-16,
+   vvd(astrom.v[0], 0.4289638913597693554e-4, 1e-16,
+                    "iauApcg", "v(1)", status);
+   vvd(astrom.v[1], 0.8115034051581320575e-4, 1e-16,
                     "iauApcg", "v(2)", status);
-   vvd(astrom.v[2], 0.3517555123437237778e-4, 1e-16,
+   vvd(astrom.v[2], 0.3517555136380563427e-4, 1e-16,
                     "iauApcg", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999951686013336, 1e-12,
+   vvd(astrom.bm1, 0.9999999951686012981, 1e-12,
                    "iauApcg", "bm1", status);
    vvd(astrom.bpn[0][0], 1.0, 0.0,
                          "iauApcg", "bpn(1,1)", status);
@@ -353,7 +383,7 @@ static void t_apcg13(int *status)
 **
 **  Called:  iauApcg13, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2;
@@ -381,13 +411,13 @@ static void t_apcg13(int *status)
                    "iauApcg13", "eh(3)", status);
    vvd(astrom.em, 1.010465295964664178, 1e-12,
                    "iauApcg13", "em", status);
-   vvd(astrom.v[0], 0.4289638897157027528e-4, 1e-16,
+   vvd(astrom.v[0], 0.4289638912941341125e-4, 1e-16,
                    "iauApcg13", "v(1)", status);
-   vvd(astrom.v[1], 0.8115034002544663526e-4, 1e-16,
+   vvd(astrom.v[1], 0.8115034032405042132e-4, 1e-16,
                    "iauApcg13", "v(2)", status);
-   vvd(astrom.v[2], 0.3517555122593144633e-4, 1e-16,
+   vvd(astrom.v[2], 0.3517555135536470279e-4, 1e-16,
                    "iauApcg13", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999951686013498, 1e-12,
+   vvd(astrom.bm1, 0.9999999951686013142, 1e-12,
                    "iauApcg13", "bm1", status);
    vvd(astrom.bpn[0][0], 1.0, 0.0,
                          "iauApcg13", "bpn(1,1)", status);
@@ -423,7 +453,7 @@ static void t_apci(int *status)
 **
 **  Called:  iauApci, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, ebpv[2][3], ehp[3], x, y, s;
@@ -463,13 +493,13 @@ static void t_apci(int *status)
                      "iauApci", "eh(3)", status);
    vvd(astrom.em, 1.010465295811013146, 1e-12,
                   "iauApci", "em", status);
-   vvd(astrom.v[0], 0.4289638897813379954e-4, 1e-16,
+   vvd(astrom.v[0], 0.4289638913597693554e-4, 1e-16,
                     "iauApci", "v(1)", status);
-   vvd(astrom.v[1], 0.8115034021720941898e-4, 1e-16,
+   vvd(astrom.v[1], 0.8115034051581320575e-4, 1e-16,
                     "iauApci", "v(2)", status);
-   vvd(astrom.v[2], 0.3517555123437237778e-4, 1e-16,
+   vvd(astrom.v[2], 0.3517555136380563427e-4, 1e-16,
                     "iauApci", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999951686013336, 1e-12,
+   vvd(astrom.bm1, 0.9999999951686012981, 1e-12,
                    "iauApci", "bm1", status);
    vvd(astrom.bpn[0][0], 0.9999991390295159156, 1e-12,
                          "iauApci", "bpn(1,1)", status);
@@ -505,7 +535,7 @@ static void t_apci13(int *status)
 **
 **  Called:  iauApci13, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, eo;
@@ -533,13 +563,13 @@ static void t_apci13(int *status)
                      "iauApci13", "eh(3)", status);
    vvd(astrom.em, 1.010465295964664178, 1e-12,
                   "iauApci13", "em", status);
-   vvd(astrom.v[0], 0.4289638897157027528e-4, 1e-16,
+   vvd(astrom.v[0], 0.4289638912941341125e-4, 1e-16,
                     "iauApci13", "v(1)", status);
-   vvd(astrom.v[1], 0.8115034002544663526e-4, 1e-16,
+   vvd(astrom.v[1], 0.8115034032405042132e-4, 1e-16,
                     "iauApci13", "v(2)", status);
-   vvd(astrom.v[2], 0.3517555122593144633e-4, 1e-16,
+   vvd(astrom.v[2], 0.3517555135536470279e-4, 1e-16,
                     "iauApci13", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999951686013498, 1e-12,
+   vvd(astrom.bm1, 0.9999999951686013142, 1e-12,
                    "iauApci13", "bm1", status);
    vvd(astrom.bpn[0][0], 0.9999992060376761710, 1e-12,
                          "iauApci13", "bpn(1,1)", status);
@@ -577,7 +607,7 @@ static void t_apco(int *status)
 **
 **  Called:  iauApco, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, ebpv[2][3], ehp[3], x, y, s,
@@ -615,27 +645,27 @@ static void t_apco(int *status)
 
    vvd(astrom.pmt, 13.25248468622587269, 1e-11,
                    "iauApco", "pmt", status);
-   vvd(astrom.eb[0], -0.9741827110630897003, 1e-12,
+   vvd(astrom.eb[0], -0.9741827110630322720, 1e-12,
                      "iauApco", "eb(1)", status);
-   vvd(astrom.eb[1], -0.2115130190135014340, 1e-12,
+   vvd(astrom.eb[1], -0.2115130190135344832, 1e-12,
                      "iauApco", "eb(2)", status);
-   vvd(astrom.eb[2], -0.09179840186968295686, 1e-12,
+   vvd(astrom.eb[2], -0.09179840186949532298, 1e-12,
                      "iauApco", "eb(3)", status);
-   vvd(astrom.eh[0], -0.9736425571689670428, 1e-12,
+   vvd(astrom.eh[0], -0.9736425571689739035, 1e-12,
                      "iauApco", "eh(1)", status);
-   vvd(astrom.eh[1], -0.2092452125848862201, 1e-12,
+   vvd(astrom.eh[1], -0.2092452125849330936, 1e-12,
                      "iauApco", "eh(2)", status);
-   vvd(astrom.eh[2], -0.09075578152261439954, 1e-12,
+   vvd(astrom.eh[2], -0.09075578152243272599, 1e-12,
                      "iauApco", "eh(3)", status);
-   vvd(astrom.em, 0.9998233241710617934, 1e-12,
+   vvd(astrom.em, 0.9998233241709957653, 1e-12,
                   "iauApco", "em", status);
-   vvd(astrom.v[0], 0.2078704985147609823e-4, 1e-16,
+   vvd(astrom.v[0], 0.2078704992916728762e-4, 1e-16,
                     "iauApco", "v(1)", status);
-   vvd(astrom.v[1], -0.8955360074407552709e-4, 1e-16,
+   vvd(astrom.v[1], -0.8955360107151952319e-4, 1e-16,
                     "iauApco", "v(2)", status);
-   vvd(astrom.v[2], -0.3863338980073114703e-4, 1e-16,
+   vvd(astrom.v[2], -0.3863338994288951082e-4, 1e-16,
                     "iauApco", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999950277561600, 1e-12,
+   vvd(astrom.bm1, 0.9999999950277561236, 1e-12,
                    "iauApco", "bm1", status);
    vvd(astrom.bpn[0][0], 0.9999991390295159156, 1e-12,
                          "iauApco", "bpn(1,1)", status);
@@ -689,7 +719,7 @@ static void t_apco13(int *status)
 **
 **  Called:  iauApco13, vvd, viv
 **
-**  This revision:  2013 October 4
+**  This revision:  2017 March 15
 */
 {
    double utc1, utc2, dut1, elong, phi, hm, xp, yp,
@@ -716,27 +746,27 @@ static void t_apco13(int *status)
 
    vvd(astrom.pmt, 13.25248468622475727, 1e-11,
                    "iauApco13", "pmt", status);
-   vvd(astrom.eb[0], -0.9741827107321449445, 1e-12,
+   vvd(astrom.eb[0], -0.9741827107320875162, 1e-12,
                    "iauApco13", "eb(1)", status);
-   vvd(astrom.eb[1], -0.2115130190489386190, 1e-12,
+   vvd(astrom.eb[1], -0.2115130190489716682, 1e-12,
                      "iauApco13", "eb(2)", status);
-   vvd(astrom.eb[2], -0.09179840189515518726, 1e-12,
+   vvd(astrom.eb[2], -0.09179840189496755339, 1e-12,
                      "iauApco13", "eb(3)", status);
-   vvd(astrom.eh[0], -0.9736425572586866640, 1e-12,
+   vvd(astrom.eh[0], -0.9736425572586935247, 1e-12,
                      "iauApco13", "eh(1)", status);
-   vvd(astrom.eh[1], -0.2092452121602867431, 1e-12,
+   vvd(astrom.eh[1], -0.2092452121603336166, 1e-12,
                      "iauApco13", "eh(2)", status);
-   vvd(astrom.eh[2], -0.09075578153903832650, 1e-12,
+   vvd(astrom.eh[2], -0.09075578153885665295, 1e-12,
                      "iauApco13", "eh(3)", status);
-   vvd(astrom.em, 0.9998233240914558422, 1e-12,
+   vvd(astrom.em, 0.9998233240913898141, 1e-12,
                   "iauApco13", "em", status);
-   vvd(astrom.v[0], 0.2078704986751370303e-4, 1e-16,
+   vvd(astrom.v[0], 0.2078704994520489246e-4, 1e-16,
                     "iauApco13", "v(1)", status);
-   vvd(astrom.v[1], -0.8955360100494469232e-4, 1e-16,
+   vvd(astrom.v[1], -0.8955360133238868938e-4, 1e-16,
                     "iauApco13", "v(2)", status);
-   vvd(astrom.v[2], -0.3863338978840051024e-4, 1e-16,
+   vvd(astrom.v[2], -0.3863338993055887398e-4, 1e-16,
                     "iauApco13", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999950277561368, 1e-12,
+   vvd(astrom.bm1, 0.9999999950277561004, 1e-12,
                    "iauApco13", "bm1", status);
    vvd(astrom.bpn[0][0], 0.9999991390295147999, 1e-12,
                          "iauApco13", "bpn(1,1)", status);
@@ -793,7 +823,7 @@ static void t_apcs(int *status)
 **
 **  Called:  iauApcs, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, pv[2][3], ebpv[2][3], ehp[3];
@@ -822,27 +852,27 @@ static void t_apcs(int *status)
 
    vvd(astrom.pmt, 13.25248468622587269, 1e-11,
                    "iauApcs", "pmt", status);
-   vvd(astrom.eb[0], -0.9741827110630456169, 1e-12,
+   vvd(astrom.eb[0], -0.9741827110629881886, 1e-12,
                      "iauApcs", "eb(1)", status);
-   vvd(astrom.eb[1], -0.2115130190136085494, 1e-12,
+   vvd(astrom.eb[1], -0.2115130190136415986, 1e-12,
                      "iauApcs", "eb(2)", status);
-   vvd(astrom.eb[2], -0.09179840186973175487, 1e-12,
+   vvd(astrom.eb[2], -0.09179840186954412099, 1e-12,
                      "iauApcs", "eb(3)", status);
-   vvd(astrom.eh[0], -0.9736425571689386099, 1e-12,
+   vvd(astrom.eh[0], -0.9736425571689454706, 1e-12,
                      "iauApcs", "eh(1)", status);
-   vvd(astrom.eh[1], -0.2092452125849967195, 1e-12,
+   vvd(astrom.eh[1], -0.2092452125850435930, 1e-12,
                      "iauApcs", "eh(2)", status);
-   vvd(astrom.eh[2], -0.09075578152266466572, 1e-12,
+   vvd(astrom.eh[2], -0.09075578152248299218, 1e-12,
                      "iauApcs", "eh(3)", status);
-   vvd(astrom.em, 0.9998233241710457140, 1e-12,
+   vvd(astrom.em, 0.9998233241709796859, 1e-12,
                   "iauApcs", "em", status);
-   vvd(astrom.v[0], 0.2078704985513566571e-4, 1e-16,
+   vvd(astrom.v[0], 0.2078704993282685510e-4, 1e-16,
                     "iauApcs", "v(1)", status);
-   vvd(astrom.v[1], -0.8955360074245006073e-4, 1e-16,
+   vvd(astrom.v[1], -0.8955360106989405683e-4, 1e-16,
                     "iauApcs", "v(2)", status);
-   vvd(astrom.v[2], -0.3863338980073572719e-4, 1e-16,
+   vvd(astrom.v[2], -0.3863338994289409097e-4, 1e-16,
                     "iauApcs", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999950277561601, 1e-12,
+   vvd(astrom.bm1, 0.9999999950277561237, 1e-12,
                    "iauApcs", "bm1", status);
    vvd(astrom.bpn[0][0], 1, 0,
                          "iauApcs", "bpn(1,1)", status);
@@ -878,7 +908,7 @@ static void t_apcs13(int *status)
 **
 **  Called:  iauApcs13, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, pv[2][3];
@@ -898,27 +928,27 @@ static void t_apcs13(int *status)
 
    vvd(astrom.pmt, 12.65133794027378508, 1e-11,
                    "iauApcs13", "pmt", status);
-   vvd(astrom.eb[0], 0.9012691529023298391, 1e-12,
+   vvd(astrom.eb[0], 0.9012691529025250644, 1e-12,
                      "iauApcs13", "eb(1)", status);
-   vvd(astrom.eb[1], -0.4173999812023068781, 1e-12,
+   vvd(astrom.eb[1], -0.4173999812023194317, 1e-12,
                      "iauApcs13", "eb(2)", status);
-   vvd(astrom.eb[2], -0.1809906511146821008, 1e-12,
+   vvd(astrom.eb[2], -0.1809906511146429670, 1e-12,
                      "iauApcs13", "eb(3)", status);
-   vvd(astrom.eh[0], 0.8939939101759726824, 1e-12,
+   vvd(astrom.eh[0], 0.8939939101760130792, 1e-12,
                      "iauApcs13", "eh(1)", status);
-   vvd(astrom.eh[1], -0.4111053891734599955, 1e-12,
+   vvd(astrom.eh[1], -0.4111053891734021478, 1e-12,
                      "iauApcs13", "eh(2)", status);
-   vvd(astrom.eh[2], -0.1782336880637689334, 1e-12,
+   vvd(astrom.eh[2], -0.1782336880636997374, 1e-12,
                      "iauApcs13", "eh(3)", status);
-   vvd(astrom.em, 1.010428384373318379, 1e-12,
+   vvd(astrom.em, 1.010428384373491095, 1e-12,
                   "iauApcs13", "em", status);
-   vvd(astrom.v[0], 0.4279877278327626511e-4, 1e-16,
+   vvd(astrom.v[0], 0.4279877294121697570e-4, 1e-16,
                     "iauApcs13", "v(1)", status);
-   vvd(astrom.v[1], 0.7963255057040027770e-4, 1e-16,
+   vvd(astrom.v[1], 0.7963255087052120678e-4, 1e-16,
                     "iauApcs13", "v(2)", status);
-   vvd(astrom.v[2], 0.3517564000441374759e-4, 1e-16,
+   vvd(astrom.v[2], 0.3517564013384691531e-4, 1e-16,
                     "iauApcs13", "v(3)", status);
-   vvd(astrom.bm1, 0.9999999952947981330, 1e-12,
+   vvd(astrom.bm1, 0.9999999952947980978, 1e-12,
                    "iauApcs13", "bm1", status);
    vvd(astrom.bpn[0][0], 1, 0,
                          "iauApcs13", "bpn(1,1)", status);
@@ -1127,7 +1157,7 @@ static void t_atci13(int *status)
 **
 **  Called:  iauAtci13, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double rc, dc, pr, pd, px, rv, date1, date2, ri, di, eo;
@@ -1144,9 +1174,9 @@ static void t_atci13(int *status)
 
    iauAtci13(rc, dc, pr, pd, px, rv, date1, date2, &ri, &di, &eo);
 
-   vvd(ri, 2.710121572969038991, 1e-12,
+   vvd(ri, 2.710121572968696744, 1e-12,
            "iauAtci13", "ri", status);
-   vvd(di, 0.1729371367218230438, 1e-12,
+   vvd(di, 0.1729371367219539137, 1e-12,
            "iauAtci13", "di", status);
    vvd(eo, -0.002900618712657375647, 1e-14,
            "iauAtci13", "eo", status);
@@ -1166,7 +1196,7 @@ static void t_atciq(int *status)
 **
 **  Called:  iauApci13, iauAtciq, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, eo, rc, dc, pr, pd, px, rv, ri, di;
@@ -1184,8 +1214,8 @@ static void t_atciq(int *status)
 
    iauAtciq(rc, dc, pr, pd, px, rv, &astrom, &ri, &di);
 
-   vvd(ri, 2.710121572969038991, 1e-12, "iauAtciq", "ri", status);
-   vvd(di, 0.1729371367218230438, 1e-12, "iauAtciq", "di", status);
+   vvd(ri, 2.710121572968696744, 1e-12, "iauAtciq", "ri", status);
+   vvd(di, 0.1729371367219539137, 1e-12, "iauAtciq", "di", status);
 
 }
 
@@ -1202,7 +1232,7 @@ static void t_atciqn(int *status)
 **
 **  Called:  iauApci13, iauAtciqn, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    iauLDBODY b[3];
@@ -1245,8 +1275,8 @@ static void t_atciqn(int *status)
 
    iauAtciqn ( rc, dc, pr, pd, px, rv, &astrom, 3, b, &ri, &di);
 
-   vvd(ri, 2.710122008105325582, 1e-12, "iauAtciqn", "ri", status);
-   vvd(di, 0.1729371916491459122, 1e-12, "iauAtciqn", "di", status);
+   vvd(ri, 2.710122008104983335, 1e-12, "iauAtciqn", "ri", status);
+   vvd(di, 0.1729371916492767821, 1e-12, "iauAtciqn", "di", status);
 
 }
 
@@ -1263,7 +1293,7 @@ static void t_atciqz(int *status)
 **
 **  Called:  iauApci13, iauAtciqz, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, eo, rc, dc, ri, di;
@@ -1278,8 +1308,8 @@ static void t_atciqz(int *status)
 
    iauAtciqz(rc, dc, &astrom, &ri, &di);
 
-   vvd(ri, 2.709994899247599271, 1e-12, "iauAtciqz", "ri", status);
-   vvd(di, 0.1728740720983623469, 1e-12, "iauAtciqz", "di", status);
+   vvd(ri, 2.709994899247256984, 1e-12, "iauAtciqz", "ri", status);
+   vvd(di, 0.1728740720984931891, 1e-12, "iauAtciqz", "di", status);
 
 }
 
@@ -1296,7 +1326,7 @@ static void t_atco13(int *status)
 **
 **  Called:  iauAtco13, vvd, viv
 **
-**  This revision:  2013 October 4
+**  This revision:  2017 March 15
 */
 {
    double rc, dc, pr, pd, px, rv, utc1, utc2, dut1,
@@ -1329,11 +1359,11 @@ static void t_atco13(int *status)
                  phpa, tc, rh, wl,
                  &aob, &zob, &hob, &dob, &rob, &eo);
 
-   vvd(aob, 0.09251774485358230653, 1e-12, "iauAtco13", "aob", status);
-   vvd(zob, 1.407661405256767021, 1e-12, "iauAtco13", "zob", status);
-   vvd(hob, -0.09265154431403157925, 1e-12, "iauAtco13", "hob", status);
-   vvd(dob, 0.1716626560075591655, 1e-12, "iauAtco13", "dob", status);
-   vvd(rob, 2.710260453503097719, 1e-12, "iauAtco13", "rob", status);
+   vvd(aob, 0.09251774485385390973, 1e-12, "iauAtco13", "aob", status);
+   vvd(zob, 1.407661405256671703, 1e-12, "iauAtco13", "zob", status);
+   vvd(hob, -0.09265154431430045141, 1e-12, "iauAtco13", "hob", status);
+   vvd(dob, 0.1716626560074556029, 1e-12, "iauAtco13", "dob", status);
+   vvd(rob, 2.710260453503366591, 1e-12, "iauAtco13", "rob", status);
    vvd(eo, -0.003020548354802412839, 1e-14, "iauAtco13", "eo", status);
    viv(j, 0, "iauAtco13", "j", status);
 
@@ -1352,7 +1382,7 @@ static void t_atic13(int *status)
 **
 **  Called:  iauAtic13, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double ri, di, date1, date2, rc, dc, eo;
@@ -1365,8 +1395,8 @@ static void t_atic13(int *status)
 
    iauAtic13(ri, di, date1, date2, &rc, &dc, &eo);
 
-   vvd(rc, 2.710126504531374930, 1e-12, "iauAtic13", "rc", status);
-   vvd(dc, 0.1740632537628342320, 1e-12, "iauAtic13", "dc", status);
+   vvd(rc, 2.710126504531716819, 1e-12, "iauAtic13", "rc", status);
+   vvd(dc, 0.1740632537627034482, 1e-12, "iauAtic13", "dc", status);
    vvd(eo, -0.002900618712657375647, 1e-14, "iauAtic13", "eo", status);
 
 }
@@ -1384,7 +1414,7 @@ static void t_aticq(int *status)
 **
 **  Called:  iauApci13, iauAticq, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, eo, ri, di, rc, dc;
@@ -1399,8 +1429,8 @@ static void t_aticq(int *status)
 
    iauAticq(ri, di, &astrom, &rc, &dc);
 
-   vvd(rc, 2.710126504531374930, 1e-12, "iauAticq", "rc", status);
-   vvd(dc, 0.1740632537628342320, 1e-12, "iauAticq", "dc", status);
+   vvd(rc, 2.710126504531716819, 1e-12, "iauAticq", "rc", status);
+   vvd(dc, 0.1740632537627034482, 1e-12, "iauAticq", "dc", status);
 
 }
 
@@ -1417,7 +1447,7 @@ static void t_aticqn(int *status)
 **
 **  Called:  iauApci13, iauAticqn, vvd
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double date1, date2, eo, ri, di, rc, dc;
@@ -1457,8 +1487,8 @@ static void t_aticqn(int *status)
 
    iauAticqn(ri, di, &astrom, 3, b, &rc, &dc);
 
-   vvd(rc, 2.709999575032685412, 1e-12, "iauAtciqn", "rc", status);
-   vvd(dc, 0.1739999656317778034, 1e-12, "iauAtciqn", "dc", status);
+   vvd(rc, 2.709999575033027333, 1e-12, "iauAtciqn", "rc", status);
+   vvd(dc, 0.1739999656316469990, 1e-12, "iauAtciqn", "dc", status);
 
 }
 
@@ -1572,7 +1602,7 @@ static void t_atoc13(int *status)
 **
 **  Called:  iauAtoc13, vvd, viv
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 March 15
 */
 {
    double utc1, utc2, dut1,
@@ -1599,8 +1629,8 @@ static void t_atoc13(int *status)
    j = iauAtoc13 ( "R", ob1, ob2, utc1, utc2, dut1,
                    elong, phi, hm, xp, yp, phpa, tc, rh, wl,
                    &rc, &dc);
-   vvd(rc, 2.709956744661000609, 1e-12, "iauAtoc13", "R/rc", status);
-   vvd(dc, 0.1741696500895398562, 1e-12, "iauAtoc13", "R/dc", status);
+   vvd(rc, 2.709956744660731630, 1e-12, "iauAtoc13", "R/rc", status);
+   vvd(dc, 0.1741696500896438967, 1e-12, "iauAtoc13", "R/dc", status);
    viv(j, 0, "iauAtoc13", "R/j", status);
 
    ob1 = -0.09247619879782006106;
@@ -1608,8 +1638,8 @@ static void t_atoc13(int *status)
    j = iauAtoc13 ( "H", ob1, ob2, utc1, utc2, dut1,
                    elong, phi, hm, xp, yp, phpa, tc, rh, wl,
                    &rc, &dc);
-   vvd(rc, 2.709956744661000609, 1e-12, "iauAtoc13", "H/rc", status);
-   vvd(dc, 0.1741696500895398562, 1e-12, "iauAtoc13", "H/dc", status);
+   vvd(rc, 2.709956744660731630, 1e-12, "iauAtoc13", "H/rc", status);
+   vvd(dc, 0.1741696500896438967, 1e-12, "iauAtoc13", "H/dc", status);
    viv(j, 0, "iauAtoc13", "H/j", status);
 
    ob1 = 0.09233952224794989993;
@@ -1617,8 +1647,8 @@ static void t_atoc13(int *status)
    j = iauAtoc13 ( "A", ob1, ob2, utc1, utc2, dut1,
                    elong, phi, hm, xp, yp, phpa, tc, rh, wl,
                    &rc, &dc);
-   vvd(rc, 2.709956744661000609, 1e-12, "iauAtoc13", "A/rc", status);
-   vvd(dc, 0.1741696500895398565, 1e-12, "iauAtoc13", "A/dc", status);
+   vvd(rc, 2.709956744660731630, 1e-12, "iauAtoc13", "A/rc", status);
+   vvd(dc, 0.1741696500896438970, 1e-12, "iauAtoc13", "A/dc", status);
    viv(j, 0, "iauAtoc13", "A/j", status);
 
 }
@@ -2905,7 +2935,7 @@ static void t_dat(int *status)
 **
 **  Called:  iauDat, vvd, viv
 **
-**  This revision:  2015 January 30
+**  This revision:  2016 July 11
 */
 {
    int j;
@@ -2922,9 +2952,9 @@ static void t_dat(int *status)
    vvd(deltat, 33.0, 0.0, "iauDat", "d2", status);
    viv(j, 0, "iauDat", "j2", status);
 
-   j = iauDat(2015, 9, 1, 0.0, &deltat);
+   j = iauDat(2017, 9, 1, 0.0, &deltat);
 
-   vvd(deltat, 36.0, 0.0, "iauDat", "d3", status);
+   vvd(deltat, 37.0, 0.0, "iauDat", "d3", status);
    viv(j, 0, "iauDat", "j3", status);
 
 }
@@ -2978,6 +3008,82 @@ static void t_dtf2d(int *status)
 
    vvd(u1+u2, 2449534.49999, 1e-6, "iauDtf2d", "u", status);
    viv(j, 0, "iauDtf2d", "j", status);
+
+}
+
+static void t_eceq06(int *status)
+/*
+**  - - - - -
+**   t _ e c e q 0 6
+**  - - - - -
+**
+**  Test iauEceq06 function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauEceq06, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double date1, date2, dl, db, dr, dd;
+
+
+   date1 = 2456165.5;
+   date2 = 0.401182685;
+   dl = 5.1;
+   db = -0.9;
+
+   iauEceq06(date1, date2, dl, db, &dr, &dd);
+
+   vvd(dr, 5.533459733613627767, 1e-14, "iauEceq06", "dr", status);
+   vvd(dd, -1.246542932554480576, 1e-14, "iauEceq06", "dd", status);
+
+}
+
+static void t_ecm06(int *status)
+/*
+**  - - - - - - - -
+**   t _ e c m 0 6
+**  - - - - - - - -
+**
+**  Test iauEcm06 function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauEcm06, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double date1, date2, rm[3][3];
+
+
+   date1 = 2456165.5;
+   date2 = 0.401182685;
+
+   iauEcm06(date1, date2, rm);
+
+   vvd(rm[0][0], 0.9999952427708701137, 1e-14,
+       "iauEcm06", "rm11", status);
+   vvd(rm[0][1], -0.2829062057663042347e-2, 1e-14,
+       "iauEcm06", "rm12", status);
+   vvd(rm[0][2], -0.1229163741100017629e-2, 1e-14,
+       "iauEcm06", "rm13", status);
+   vvd(rm[1][0], 0.3084546876908653562e-2, 1e-14,
+       "iauEcm06", "rm21", status);
+   vvd(rm[1][1], 0.9174891871550392514, 1e-14,
+       "iauEcm06", "rm22", status);
+   vvd(rm[1][2], 0.3977487611849338124, 1e-14,
+       "iauEcm06", "rm23", status);
+   vvd(rm[2][0], 0.2488512951527405928e-5, 1e-14,
+       "iauEcm06", "rm31", status);
+   vvd(rm[2][1], -0.3977506604161195467, 1e-14,
+       "iauEcm06", "rm32", status);
+   vvd(rm[2][2], 0.9174935488232863071, 1e-14,
+       "iauEcm06", "rm33", status);
 
 }
 
@@ -3121,7 +3227,7 @@ static void t_eform(int *status)
 **
 **  Called:  iauEform, viv, vvd
 **
-**  This revision:  2013 August 7
+**  This revision:  2016 March 12
 */
 {
    int j;
@@ -3135,19 +3241,19 @@ static void t_eform(int *status)
 
    viv(j, 0, "iauEform", "j1", status);
    vvd(a, 6378137.0, 1e-10, "iauEform", "a1", status);
-   vvd(f, 0.0033528106647474807, 1e-18, "iauEform", "f1", status);
+   vvd(f, 0.3352810664747480720e-2, 1e-18, "iauEform", "f1", status);
 
    j = iauEform(GRS80, &a, &f);
 
    viv(j, 0, "iauEform", "j2", status);
    vvd(a, 6378137.0, 1e-10, "iauEform", "a2", status);
-   vvd(f, 0.0033528106811823189, 1e-18, "iauEform", "f2", status);
+   vvd(f, 0.3352810681182318935e-2, 1e-18, "iauEform", "f2", status);
 
    j = iauEform(WGS72, &a, &f);
 
    viv(j, 0, "iauEform", "j2", status);
    vvd(a, 6378135.0, 1e-10, "iauEform", "a3", status);
-   vvd(f, 0.0033527794541675049, 1e-18, "iauEform", "f3", status);
+   vvd(f, 0.3352779454167504862e-2, 1e-18, "iauEform", "f3", status);
 
    j = iauEform(4, &a, &f);
    viv(j, -1, "iauEform", "j3", status);
@@ -3374,6 +3480,37 @@ static void t_epv00(int *status)
        "iauEpv00", "vb(z)", status);
 
    viv(j, 0, "iauEpv00", "j", status);
+
+}
+
+static void t_eqec06(int *status)
+/*
+**  - - - - - - - - -
+**   t _ e q e c 0 6
+**  - - - - - - - - -
+**
+**  Test iauEqec06 function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauEqec06, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double date1, date2, dr, dd, dl, db;
+
+
+   date1 = 1234.5;
+   date2 = 2440000.5;
+   dr = 1.234;
+   dd = 0.987;
+
+   iauEqec06(date1, date2, dr, dd, &dl, &db);
+
+   vvd(dl, 1.342509918994654619, 1e-14, "iauEqec06", "dl", status);
+   vvd(db, 0.5926215259704608132, 1e-14, "iauEqec06", "db", status);
 
 }
 
@@ -3707,6 +3844,125 @@ static void t_fave03(int *status)
        "iauFave03", "", status);
 }
 
+static void t_fk425(int *status)
+/*
+**  - - - - - - - -
+**   t _ f k 4 2 5
+**  - - - - - - - -
+**
+**  Test iauFk425 function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauFk425, vvd
+**
+**  This revision:  2018 December 6
+*/
+{
+   double r1950, d1950, dr1950, dd1950, p1950, v1950,
+          r2000, d2000, dr2000, dd2000, p2000, v2000;
+
+
+   r1950 = 0.07626899753879587532;
+   d1950 = -1.137405378399605780;
+   dr1950 = 0.1973749217849087460e-4;
+   dd1950 = 0.5659714913272723189e-5;
+   p1950 = 0.134;
+   v1950 = 8.7;
+
+   iauFk425(r1950, d1950, dr1950, dd1950, p1950, v1950,
+            &r2000, &d2000, &dr2000, &dd2000, &p2000, &v2000);
+
+   vvd(r2000, 0.08757989933556446040, 1e-14,
+       "iauFk425", "r2000", status);
+   vvd(d2000, -1.132279113042091895, 1e-12,
+       "iauFk425", "d2000", status);
+   vvd(dr2000, 0.1953670614474396139e-4, 1e-17,
+       "iauFk425", "dr2000", status);
+   vvd(dd2000, 0.5637686678659640164e-5, 1e-18,
+       "iauFk425", "dd2000", status);
+   vvd(p2000, 0.1339919950582767871, 1e-13, "iauFk425", "p2000", status);
+   vvd(v2000, 8.736999669183529069, 1e-12, "iauFk425", "v2000", status);
+
+}
+
+static void t_fk45z(int *status)
+/*
+**  - - - - - - - -
+**   t _ f k 4 5 z
+**  - - - - - - - -
+**
+**  Test iauFk45z function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauFk45z, vvd
+**
+**  This revision:  2018 December 6
+*/
+{
+   double r1950, d1950, bepoch, r2000, d2000;
+
+
+   r1950 = 0.01602284975382960982;
+   d1950 = -0.1164347929099906024;
+   bepoch = 1954.677617625256806;
+
+   iauFk45z(r1950, d1950, bepoch, &r2000, &d2000);
+
+   vvd(r2000, 0.02719295911606862303, 1e-15,
+       "iauFk45z", "r2000", status);
+   vvd(d2000, -0.1115766001565926892, 1e-13,
+       "iauFk45z", "d2000", status);
+
+}
+
+static void t_fk524(int *status)
+/*
+**  - - - - - - - -
+**   t _ f k 5 2 4
+**  - - - - - - - -
+**
+**  Test iauFk524 function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauFk524, vvd
+**
+**  This revision:  2018 December 6
+*/
+{
+   double r2000, d2000, dr2000, dd2000, p2000, v2000,
+          r1950, d1950, dr1950, dd1950, p1950, v1950;
+
+
+   r2000 = 0.8723503576487275595;
+   d2000 = -0.7517076365138887672;
+   dr2000 = 0.2019447755430472323e-4;
+   dd2000 = 0.3541563940505160433e-5;
+   p2000 = 0.1559;
+   v2000 = 86.87;
+
+   iauFk524(r2000, d2000, dr2000, dd2000, p2000, v2000,
+            &r1950, &d1950, &dr1950,&dd1950, &p1950, &v1950);
+
+   vvd(r1950, 0.8636359659799603487, 1e-13,
+       "iauFk524", "r1950", status);
+   vvd(d1950, -0.7550281733160843059, 1e-13,
+       "iauFk524", "d1950", status);
+   vvd(dr1950, 0.2023628192747172486e-4, 1e-17,
+       "iauFk524", "dr1950", status);
+   vvd(dd1950, 0.3624459754935334718e-5, 1e-18,
+       "iauFk524", "dd1950", status);
+   vvd(p1950, 0.1560079963299390241, 1e-13,
+       "iauFk524", "p1950", status);
+   vvd(v1950, 86.79606353469163751, 1e-11, "iauFk524", "v1950", status);
+
+}
+
 static void t_fk52h(int *status)
 /*
 **  - - - - - - - -
@@ -3720,7 +3976,7 @@ static void t_fk52h(int *status)
 **
 **  Called:  iauFk52h, vvd
 **
-**  This revision:  2013 August 7
+**  This revision:  2017 January 3
 */
 {
    double r5, d5, dr5, dd5, px5, rv5, rh, dh, drh, ddh, pxh, rvh;
@@ -3748,6 +4004,42 @@ static void t_fk52h(int *status)
        "iauFk52h", "px", status);
    vvd(rvh, -7.6000000940000254, 1e-11,
        "iauFk52h", "rv", status);
+
+}
+
+static void t_fk54z(int *status)
+/*
+**  - - - - - - - -
+**   t _ f k 5 4 z
+**  - - - - - - - -
+**
+**  Test iauFk54z function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauFk54z, vvd
+**
+**  This revision:  2018 December 6
+*/
+{
+   double r2000, d2000, bepoch, r1950, d1950, dr1950, dd1950;
+
+
+   r2000 = 0.02719026625066316119;
+   d2000 = -0.1115815170738754813;
+   bepoch = 1954.677308160316374;
+
+   iauFk54z(r2000, d2000, bepoch, &r1950, &d1950, &dr1950, &dd1950);
+
+   vvd(r1950, 0.01602015588390065476, 1e-14,
+       "iauFk54z", "r1950", status);
+   vvd(d1950, -0.1164397101110765346, 1e-13,
+       "iauFk54z", "d1950", status);
+   vvd(dr1950, -0.1175712648471090704e-7, 1e-20,
+       "iauFk54z", "dr1950", status);
+   vvd(dd1950, 0.2108109051316431056e-7, 1e-20,
+       "iauFk54z", "dd1950", status);
 
 }
 
@@ -3947,7 +4239,7 @@ static void t_gc2gd(int *status)
 **
 **  Called:  iauGc2gd, viv, vvd
 **
-**  This revision:  2013 August 7
+**  This revision:  2016 March 12
 */
 {
    int j;
@@ -3961,23 +4253,23 @@ static void t_gc2gd(int *status)
    j = iauGc2gd(WGS84, xyz, &e, &p, &h);
 
    viv(j, 0, "iauGc2gd", "j1", status);
-   vvd(e, 0.98279372324732907, 1e-14, "iauGc2gd", "e1", status);
+   vvd(e, 0.9827937232473290680, 1e-14, "iauGc2gd", "e1", status);
    vvd(p, 0.97160184819075459, 1e-14, "iauGc2gd", "p1", status);
-   vvd(h, 331.41724614260599, 1e-8, "iauGc2gd", "h1", status);
+   vvd(h, 331.4172461426059892, 1e-8, "iauGc2gd", "h1", status);
 
    j = iauGc2gd(GRS80, xyz, &e, &p, &h);
 
    viv(j, 0, "iauGc2gd", "j2", status);
-   vvd(e, 0.98279372324732907, 1e-14, "iauGc2gd", "e2", status);
+   vvd(e, 0.9827937232473290680, 1e-14, "iauGc2gd", "e2", status);
    vvd(p, 0.97160184820607853, 1e-14, "iauGc2gd", "p2", status);
    vvd(h, 331.41731754844348, 1e-8, "iauGc2gd", "h2", status);
 
    j = iauGc2gd(WGS72, xyz, &e, &p, &h);
 
    viv(j, 0, "iauGc2gd", "j3", status);
-   vvd(e, 0.98279372324732907, 1e-14, "iauGc2gd", "e3", status);
-   vvd(p, 0.97160181811015119, 1e-14, "iauGc2gd", "p3", status);
-   vvd(h, 333.27707261303181, 1e-8, "iauGc2gd", "h3", status);
+   vvd(e, 0.9827937232473290680, 1e-14, "iauGc2gd", "e3", status);
+   vvd(p, 0.9716018181101511937, 1e-14, "iauGc2gd", "p3", status);
+   vvd(h, 333.2770726130318123, 1e-8, "iauGc2gd", "h3", status);
 
    j = iauGc2gd(4, xyz, &e, &p, &h);
 
@@ -3997,7 +4289,7 @@ static void t_gc2gde(int *status)
 **
 **  Called:  iauGc2gde, viv, vvd
 **
-**  This revision:  2013 August 7
+**  This revision:  2016 March 12
 */
 {
    int j;
@@ -4008,8 +4300,8 @@ static void t_gc2gde(int *status)
    j = iauGc2gde(a, f, xyz, &e, &p, &h);
 
    viv(j, 0, "iauGc2gde", "j", status);
-   vvd(e, 0.98279372324732907, 1e-14, "iauGc2gde", "e", status);
-   vvd(p, 0.97160183775704115, 1e-14, "iauGc2gde", "p", status);
+   vvd(e, 0.9827937232473290680, 1e-14, "iauGc2gde", "e", status);
+   vvd(p, 0.9716018377570411532, 1e-14, "iauGc2gde", "p", status);
    vvd(h, 332.36862495764397, 1e-8, "iauGc2gde", "h", status);
 }
 
@@ -4026,7 +4318,7 @@ static void t_gd2gc(int *status)
 **
 **  Called:  iauGd2gc, viv, vvd
 **
-**  This revision:  2013 August 7
+**  This revision:  2016 March 12
 */
 {
    int j;
@@ -4040,23 +4332,23 @@ static void t_gd2gc(int *status)
    j = iauGd2gc(WGS84, e, p, h, xyz);
 
    viv(j, 0, "iauGd2gc", "j1", status);
-   vvd(xyz[0], -5599000.5577049947, 1e-7, "iauGd2gc", "0/1", status);
-   vvd(xyz[1], 233011.67223479203, 1e-7, "iauGd2gc", "1/1", status);
-   vvd(xyz[2], -3040909.4706983363, 1e-7, "iauGd2gc", "2/1", status);
+   vvd(xyz[0], -5599000.5577049947, 1e-7, "iauGd2gc", "1/1", status);
+   vvd(xyz[1], 233011.67223479203, 1e-7, "iauGd2gc", "2/1", status);
+   vvd(xyz[2], -3040909.4706983363, 1e-7, "iauGd2gc", "3/1", status);
 
    j = iauGd2gc(GRS80, e, p, h, xyz);
 
    viv(j, 0, "iauGd2gc", "j2", status);
-   vvd(xyz[0], -5599000.5577260984, 1e-7, "iauGd2gc", "0/2", status);
-   vvd(xyz[1], 233011.6722356703, 1e-7, "iauGd2gc", "1/2", status);
-   vvd(xyz[2], -3040909.4706095476, 1e-7, "iauGd2gc", "2/2", status);
+   vvd(xyz[0], -5599000.5577260984, 1e-7, "iauGd2gc", "1/2", status);
+   vvd(xyz[1], 233011.6722356702949, 1e-7, "iauGd2gc", "2/2", status);
+   vvd(xyz[2], -3040909.4706095476, 1e-7, "iauGd2gc", "3/2", status);
 
    j = iauGd2gc(WGS72, e, p, h, xyz);
 
    viv(j, 0, "iauGd2gc", "j3", status);
-   vvd(xyz[0], -5598998.7626301490, 1e-7, "iauGd2gc", "0/3", status);
-   vvd(xyz[1], 233011.5975297822, 1e-7, "iauGd2gc", "1/3", status);
-   vvd(xyz[2], -3040908.6861467111, 1e-7, "iauGd2gc", "2/3", status);
+   vvd(xyz[0], -5598998.7626301490, 1e-7, "iauGd2gc", "1/3", status);
+   vvd(xyz[1], 233011.5975297822211, 1e-7, "iauGd2gc", "2/3", status);
+   vvd(xyz[2], -3040908.6861467111, 1e-7, "iauGd2gc", "3/3", status);
 
    j = iauGd2gc(4, e, p, h, xyz);
 
@@ -4076,7 +4368,7 @@ static void t_gd2gce(int *status)
 **
 **  Called:  iauGd2gce, viv, vvd
 **
-**  This revision:  2013 August 7
+**  This revision:  2016 March 12
 */
 {
    int j;
@@ -4087,9 +4379,9 @@ static void t_gd2gce(int *status)
    j = iauGd2gce(a, f, e, p, h, xyz);
 
    viv(j, 0, "iauGd2gce", "j", status);
-   vvd(xyz[0], -5598999.6665116328, 1e-7, "iauGd2gce", "0", status);
-   vvd(xyz[1], 233011.63514630572, 1e-7, "iauGd2gce", "1", status);
-   vvd(xyz[2], -3040909.0517314132, 1e-7, "iauGd2gce", "2", status);
+   vvd(xyz[0], -5598999.6665116328, 1e-7, "iauGd2gce", "1", status);
+   vvd(xyz[1], 233011.6351463057189, 1e-7, "iauGd2gce", "2", status);
+   vvd(xyz[2], -3040909.0517314132, 1e-7, "iauGd2gce", "3", status);
 }
 
 static void t_gmst00(int *status)
@@ -4342,7 +4634,7 @@ static void t_h2fk5(int *status)
 **
 **  Called:  iauH2fk5, vvd
 **
-**  This revision:  2013 August 7
+**  This revision:  2017 January 3
 */
 {
    double rh, dh, drh, ddh, pxh, rvh, r5, d5, dr5, dd5, px5, rv5;
@@ -4368,8 +4660,67 @@ static void t_h2fk5(int *status)
        "iauH2fk5", "dd5", status);
    vvd(px5, 0.37921, 1e-13,
        "iauH2fk5", "px", status);
-   vvd(rv5, -7.6000001309071126, 1e-10,
+   vvd(rv5, -7.6000001309071126, 1e-11,
        "iauH2fk5", "rv", status);
+
+}
+
+static void t_hd2ae(int *status)
+/*
+**  - - - - - - - -
+**   t _ h d 2 a e
+**  - - - - - - - -
+**
+**  Test iauHd2ae function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauHd2ae and vvd
+**
+**  This revision:  2017 October 21
+*/
+{
+   double h, d, p, a, e;
+
+
+   h = 1.1;
+   d = 1.2;
+   p = 0.3;
+
+   iauHd2ae(h, d, p, &a, &e);
+
+   vvd(a, 5.916889243730066194, 1e-13, "iauHd2ae", "a", status);
+   vvd(e, 0.4472186304990486228, 1e-14, "iauHd2ae", "e", status);
+
+}
+
+static void t_hd2pa(int *status)
+/*
+**  - - - - - - - -
+**   t _ h d 2 p a
+**  - - - - - - - -
+**
+**  Test iauHd2pa function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauHd2pa and vvd
+**
+**  This revision:  2017 October 21
+*/
+{
+   double h, d, p, q;
+
+
+   h = 1.1;
+   d = 1.2;
+   p = 0.3;
+
+   q = iauHd2pa(h, d, p);
+
+   vvd(q, 1.906227428001995580, 1e-13, "iauHd2pa", "q", status);
 
 }
 
@@ -4665,6 +5016,262 @@ static void t_ldsun(int *status)
                "iauLdsun", "2", status);
    vvd(p1[2], -0.2167355419322321302, 1e-12,
                "iauLdsun", "3", status);
+
+}
+
+static void t_lteceq(int *status)
+/*
+**  - - - - - - - - -
+**   t _ l t e c e q
+**  - - - - - - - - -
+**
+**  Test iauLteceq function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauLteceq, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double epj, dl, db, dr, dd;
+
+
+   epj = 2500.0;
+   dl = 1.5;
+   db = 0.6;
+
+   iauLteceq(epj, dl, db, &dr, &dd);
+
+   vvd(dr, 1.275156021861921167, 1e-14, "iauLteceq", "dr", status);
+   vvd(dd, 0.9966573543519204791, 1e-14, "iauLteceq", "dd", status);
+
+}
+
+static void t_ltecm(int *status)
+/*
+**  - - - - - - - -
+**   t _ l t e c m
+**  - - - - - - - -
+**
+**  Test iauLtecm function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauLtecm, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double epj, rm[3][3];
+
+
+   epj = -3000.0;
+
+   iauLtecm(epj, rm);
+
+   vvd(rm[0][0], 0.3564105644859788825, 1e-14,
+       "iauLtecm", "rm11", status);
+   vvd(rm[0][1], 0.8530575738617682284, 1e-14,
+       "iauLtecm", "rm12", status);
+   vvd(rm[0][2], 0.3811355207795060435, 1e-14,
+       "iauLtecm", "rm13", status);
+   vvd(rm[1][0], -0.9343283469640709942, 1e-14,
+       "iauLtecm", "rm21", status);
+   vvd(rm[1][1], 0.3247830597681745976, 1e-14,
+       "iauLtecm", "rm22", status);
+   vvd(rm[1][2], 0.1467872751535940865, 1e-14,
+       "iauLtecm", "rm23", status);
+   vvd(rm[2][0], 0.1431636191201167793e-2, 1e-14,
+       "iauLtecm", "rm31", status);
+   vvd(rm[2][1], -0.4084222566960599342, 1e-14,
+       "iauLtecm", "rm32", status);
+   vvd(rm[2][2], 0.9127919865189030899, 1e-14,
+       "iauLtecm", "rm33", status);
+
+}
+
+static void t_lteqec(int *status)
+/*
+**  - - - - - - - - -
+**   t _ l t e q e c
+**  - - - - - - - - -
+**
+**  Test iauLteqec function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauLteqec, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double epj, dr, dd, dl, db;
+
+
+   epj = -1500.0;
+   dr = 1.234;
+   dd = 0.987;
+
+   iauLteqec(epj, dr, dd, &dl, &db);
+
+   vvd(dl, 0.5039483649047114859, 1e-14, "iauLteqec", "dl", status);
+   vvd(db, 0.5848534459726224882, 1e-14, "iauLteqec", "db", status);
+
+}
+
+static void t_ltp(int *status)
+/*
+**  - - - - - -
+**   t _ l t p
+**  - - - - - -
+**
+**  Test iauLtp function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauLtp, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double epj, rp[3][3];
+
+
+   epj = 1666.666;
+
+   iauLtp(epj, rp);
+
+   vvd(rp[0][0], 0.9967044141159213819, 1e-14,
+       "iauLtp", "rp11", status);
+   vvd(rp[0][1], 0.7437801893193210840e-1, 1e-14,
+       "iauLtp", "rp12", status);
+   vvd(rp[0][2], 0.3237624409345603401e-1, 1e-14,
+       "iauLtp", "rp13", status);
+   vvd(rp[1][0], -0.7437802731819618167e-1, 1e-14,
+       "iauLtp", "rp21", status);
+   vvd(rp[1][1], 0.9972293894454533070, 1e-14,
+       "iauLtp", "rp22", status);
+   vvd(rp[1][2], -0.1205768842723593346e-2, 1e-14,
+       "iauLtp", "rp23", status);
+   vvd(rp[2][0], -0.3237622482766575399e-1, 1e-14,
+       "iauLtp", "rp31", status);
+   vvd(rp[2][1], -0.1206286039697609008e-2, 1e-14,
+       "iauLtp", "rp32", status);
+   vvd(rp[2][2], 0.9994750246704010914, 1e-14,
+       "iauLtp", "rp33", status);
+
+}
+
+static void t_ltpb(int *status)
+/*
+**  - - - - - - -
+**   t _ l t p b
+**  - - - - - - -
+**
+**  Test iauLtpb function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauLtpb, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double epj, rpb[3][3];
+
+
+   epj = 1666.666;
+
+   iauLtpb(epj, rpb);
+
+   vvd(rpb[0][0], 0.9967044167723271851, 1e-14,
+       "iauLtpb", "rpb11", status);
+   vvd(rpb[0][1], 0.7437794731203340345e-1, 1e-14,
+       "iauLtpb", "rpb12", status);
+   vvd(rpb[0][2], 0.3237632684841625547e-1, 1e-14,
+       "iauLtpb", "rpb13", status);
+   vvd(rpb[1][0], -0.7437795663437177152e-1, 1e-14,
+       "iauLtpb", "rpb21", status);
+   vvd(rpb[1][1], 0.9972293947500013666, 1e-14,
+       "iauLtpb", "rpb22", status);
+   vvd(rpb[1][2], -0.1205741865911243235e-2, 1e-14,
+       "iauLtpb", "rpb23", status);
+   vvd(rpb[2][0], -0.3237630543224664992e-1, 1e-14,
+       "iauLtpb", "rpb31", status);
+   vvd(rpb[2][1], -0.1206316791076485295e-2, 1e-14,
+       "iauLtpb", "rpb32", status);
+   vvd(rpb[2][2], 0.9994750220222438819, 1e-14,
+       "iauLtpb", "rpb33", status);
+
+}
+
+static void t_ltpecl(int *status)
+/*
+**  - - - - - - - - -
+**   t _ l t p e c l
+**  - - - - - - - - -
+**
+**  Test iauLtpecl function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauLtpecl, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double epj, vec[3];
+
+
+   epj = -1500.0;
+
+   iauLtpecl(epj, vec);
+
+   vvd(vec[0], 0.4768625676477096525e-3, 1e-14,
+       "iauLtpecl", "vec1", status);
+   vvd(vec[1], -0.4052259533091875112, 1e-14,
+       "iauLtpecl", "vec2", status);
+   vvd(vec[2], 0.9142164401096448012, 1e-14,
+       "iauLtpecl", "vec3", status);
+
+}
+
+static void t_ltpequ(int *status)
+/*
+**  - - - - - - - - -
+**   t _ l t p e q u
+**  - - - - - - - - -
+**
+**  Test iauLtpequ function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauLtpequ, vvd
+**
+**  This revision:  2016 March 12
+*/
+{
+   double epj, veq[3];
+
+
+   epj = -2500.0;
+
+   iauLtpequ(epj, veq);
+
+   vvd(veq[0], -0.3586652560237326659, 1e-14,
+       "iauLtpequ", "veq1", status);
+   vvd(veq[1], -0.1996978910771128475, 1e-14,
+       "iauLtpequ", "veq2", status);
+   vvd(veq[2], 0.9118552442250819624, 1e-14,
+       "iauLtpequ", "veq3", status);
 
 }
 
@@ -5621,7 +6228,7 @@ static void t_pmpx(int *status)
 **
 **  Called:  iauPmpx, vvd
 **
-**  This revision:  2013 October 2
+**  This revision:  2017 March 15
 */
 {
    double rc, dc, pr, pd, px, rv, pmt, pob[3], pco[3];
@@ -5640,11 +6247,11 @@ static void t_pmpx(int *status)
 
    iauPmpx(rc, dc, pr, pd, px, rv, pmt, pob, pco);
 
-   vvd(pco[0], 0.2328137623960308440, 1e-12,
+   vvd(pco[0], 0.2328137623960308438, 1e-12,
                "iauPmpx", "1", status);
-   vvd(pco[1], 0.6651097085397855317, 1e-12,
+   vvd(pco[1], 0.6651097085397855328, 1e-12,
                "iauPmpx", "2", status);
-   vvd(pco[2], 0.7095257765896359847, 1e-12,
+   vvd(pco[2], 0.7095257765896359837, 1e-12,
                "iauPmpx", "3", status);
 
 }
@@ -5662,7 +6269,7 @@ static void t_pmsafe(int *status)
 **
 **  Called:  iauPmsafe, vvd, viv
 **
-**  This revision:  2013 October 2
+**  This revision:  2017 March 15
 */
 {
    int j;
@@ -5687,15 +6294,15 @@ static void t_pmsafe(int *status)
 
    vvd(ra2, 1.234087484501017061, 1e-12,
             "iauPmsafe", "ra2", status);
-   vvd(dec2, 0.7888249982450468574, 1e-12,
+   vvd(dec2, 0.7888249982450468567, 1e-12,
             "iauPmsafe", "dec2", status);
    vvd(pmr2, 0.9996457663586073988e-5, 1e-12,
              "iauPmsafe", "pmr2", status);
-   vvd(pmd2, -0.2000040085106737816e-4, 1e-16,
+   vvd(pmd2, -0.2000040085106754565e-4, 1e-16,
              "iauPmsafe", "pmd2", status);
-   vvd(px2, 0.9999997295356765185e-2, 1e-12,
+   vvd(px2, 0.9999997295356830666e-2, 1e-12,
             "iauPmsafe", "px2", status);
-   vvd(rv2, 10.38468380113917014, 1e-10,
+   vvd(rv2, 10.38468380293920069, 1e-10,
             "iauPmsafe", "rv2", status);
    viv ( j, 0, "iauPmsafe", "j", status);
 
@@ -7026,7 +7633,7 @@ static void t_pvstar(int *status)
 **
 **  Called:  iauPvstar, vvd, viv
 **
-**  This revision:  2013 August 7
+**  This revision:  2017 March 15
 */
 {
    double pv[2][3], ra, dec, pmr, pmd, px, rv;
@@ -7045,10 +7652,10 @@ static void t_pvstar(int *status)
 
    vvd(ra, 0.1686756e-1, 1e-12, "iauPvstar", "ra", status);
    vvd(dec, -1.093989828, 1e-12, "iauPvstar", "dec", status);
-   vvd(pmr, -0.178323516e-4, 1e-16, "iauPvstar", "pmr", status);
-   vvd(pmd, 0.2336024047e-5, 1e-16, "iauPvstar", "pmd", status);
+   vvd(pmr, -0.1783235160000472788e-4, 1e-16, "iauPvstar", "pmr", status);
+   vvd(pmd, 0.2336024047000619347e-5, 1e-16, "iauPvstar", "pmd", status);
    vvd(px, 0.74723, 1e-12, "iauPvstar", "px", status);
-   vvd(rv, -21.6, 1e-11, "iauPvstar", "rv", status);
+   vvd(rv, -21.60000010107306010, 1e-11, "iauPvstar", "rv", status);
 
    viv(j, 0, "iauPvstar", "j", status);
 
@@ -8031,7 +8638,7 @@ static void t_starpm(int *status)
 **
 **  Called:  iauStarpm, vvd, viv
 **
-**  This revision:  2013 August 7
+**  This revision:  2017 March 15
 */
 {
    double ra1, dec1, pmr1, pmd1, px1, rv1;
@@ -8050,17 +8657,17 @@ static void t_starpm(int *status)
                  2400000.5, 50083.0, 2400000.5, 53736.0,
                  &ra2, &dec2, &pmr2, &pmd2, &px2, &rv2);
 
-   vvd(ra2, 0.01668919069414242368, 1e-13,
+   vvd(ra2, 0.01668919069414256149, 1e-13,
        "iauStarpm", "ra", status);
-   vvd(dec2, -1.093966454217127879, 1e-13,
+   vvd(dec2, -1.093966454217127897, 1e-13,
        "iauStarpm", "dec", status);
-   vvd(pmr2, -0.1783662682155932702e-4, 1e-17,
+   vvd(pmr2, -0.1783662682153176524e-4, 1e-17,
        "iauStarpm", "pmr", status);
-   vvd(pmd2, 0.2338092915987603664e-5, 1e-17,
+   vvd(pmd2, 0.2338092915983989595e-5, 1e-17,
        "iauStarpm", "pmd", status);
-   vvd(px2, 0.7473533835323493644, 1e-13,
+   vvd(px2, 0.7473533835317719243, 1e-13,
        "iauStarpm", "px", status);
-   vvd(rv2, -21.59905170476860786, 1e-11,
+   vvd(rv2, -21.59905170476417175, 1e-11,
        "iauStarpm", "rv", status);
 
    viv(j, 0, "iauStarpm", "j", status);
@@ -8080,7 +8687,7 @@ static void t_starpv(int *status)
 **
 **  Called:  iauStarpv, vvd, viv
 **
-**  This revision:  2013 August 7
+**  This revision:  2017 March 15
 */
 {
    double ra, dec, pmr, pmd, px, rv, pv[2][3];
@@ -8103,11 +8710,11 @@ static void t_starpv(int *status)
    vvd(pv[0][2], -245251.2339876830091, 1e-10,
        "iauStarpv", "13", status);
 
-   vvd(pv[1][0], -0.4051854035740712739e-2, 1e-13,
+   vvd(pv[1][0], -0.4051854008955659551e-2, 1e-13,
        "iauStarpv", "21", status);
-   vvd(pv[1][1], -0.6253919754866173866e-2, 1e-15,
+   vvd(pv[1][1], -0.6253919754414777970e-2, 1e-15,
        "iauStarpv", "22", status);
-   vvd(pv[1][2], 0.1189353719774107189e-1, 1e-13,
+   vvd(pv[1][2], 0.1189353714588109341e-1, 1e-13,
        "iauStarpv", "23", status);
 
    viv(j, 0, "iauStarpv", "j", status);
@@ -8436,6 +9043,223 @@ static void t_tf2d(int *status)
 
    vvd(d, 0.9966539351851851852, 1e-12, "iauTf2d", "d", status);
    viv(j, 0, "iauTf2d", "j", status);
+
+}
+
+static void t_tpors(int *status)
+/*
+**  - - - - - - - -
+**   t _ t p o r s
+**  - - - - - - - -
+**
+**  Test iauTpors function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauTpors, vvd, viv
+**
+**  This revision:  2017 October 21
+*/
+{
+   double xi, eta, ra, dec, az1, bz1, az2, bz2;
+   int n;
+
+
+   xi = -0.03;
+   eta = 0.07;
+   ra = 1.3;
+   dec = 1.5;
+
+   n = iauTpors(xi, eta, ra, dec, &az1, &bz1, &az2, &bz2);
+
+   vvd(az1, 1.736621577783208748, 1e-13, "iauTpors", "az1", status);
+   vvd(bz1, 1.436736561844090323, 1e-13, "iauTpors", "bz1", status);
+
+   vvd(az2, 4.004971075806584490, 1e-13, "iauTpors", "az2", status);
+   vvd(bz2, 1.565084088476417917, 1e-13, "iauTpors", "bz2", status);
+
+   viv(n, 2, "iauTpors", "n", status);
+
+}
+
+static void t_tporv(int *status)
+/*
+**  - - - - - - - -
+**   t _ t p o r v
+**  - - - - - - - -
+**
+**  Test iauTporv function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauTporv, iauS2c, vvd, viv
+**
+**  This revision:  2017 October 21
+*/
+{
+   double xi, eta, ra, dec, v[3], vz1[3], vz2[3];
+   int n;
+
+
+   xi = -0.03;
+   eta = 0.07;
+   ra = 1.3;
+   dec = 1.5;
+   iauS2c(ra, dec, v);
+
+   n = iauTporv(xi, eta, v, vz1, vz2);
+
+   vvd(vz1[0], -0.02206252822366888610, 1e-15,
+       "iauTporv", "x1", status);
+   vvd(vz1[1], 0.1318251060359645016, 1e-14,
+       "iauTporv", "y1", status);
+   vvd(vz1[2], 0.9910274397144543895, 1e-14,
+       "iauTporv", "z1", status);
+
+   vvd(vz2[0], -0.003712211763801968173, 1e-16,
+       "iauTporv", "x2", status);
+   vvd(vz2[1], -0.004341519956299836813, 1e-16,
+       "iauTporv", "y2", status);
+   vvd(vz2[2], 0.9999836852110587012, 1e-14,
+       "iauTporv", "z2", status);
+
+   viv(n, 2, "iauTporv", "n", status);
+
+}
+
+static void t_tpsts(int *status)
+/*
+**  - - - - - - - -
+**   t _ t p s t s
+**  - - - - - - - -
+**
+**  Test iauTpsts function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauTpsts, vvd
+**
+**  This revision:  2017 October 21
+*/
+{
+   double xi, eta, raz, decz, ra, dec;
+
+
+   xi = -0.03;
+   eta = 0.07;
+   raz = 2.3;
+   decz = 1.5;
+
+   iauTpsts(xi, eta, raz, decz, &ra, &dec);
+
+   vvd(ra, 0.7596127167359629775, 1e-14, "iauTpsts", "ra", status);
+   vvd(dec, 1.540864645109263028, 1e-13, "iauTpsts", "dec", status);
+
+}
+
+static void t_tpstv(int *status)
+/*
+**  - - - - - - - -
+**   t _ t p s t v
+**  - - - - - - - -
+**
+**  Test iauTpstv function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauTpstv, iauS2c, vvd
+**
+**  This revision:  2017 October 21
+*/
+{
+   double xi, eta, raz, decz, vz[3], v[3];
+
+
+   xi = -0.03;
+   eta = 0.07;
+   raz = 2.3;
+   decz = 1.5;
+   iauS2c(raz, decz, vz);
+
+   iauTpstv(xi, eta, vz, v);
+
+   vvd(v[0], 0.02170030454907376677, 1e-15, "iauTpstv", "x", status);
+   vvd(v[1], 0.02060909590535367447, 1e-15, "iauTpstv", "y", status);
+   vvd(v[2], 0.9995520806583523804, 1e-14, "iauTpstv", "z", status);
+
+}
+
+static void t_tpxes(int *status)
+/*
+**  - - - - - - - -
+**   t _ t p x e s
+**  - - - - - - - -
+**
+**  Test iauTpxes function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauTpxes, vvd, viv
+**
+**  This revision:  2017 October 21
+*/
+{
+   double ra, dec, raz, decz, xi, eta;
+   int j;
+
+
+   ra = 1.3;
+   dec = 1.55;
+   raz = 2.3;
+   decz = 1.5;
+
+   j = iauTpxes(ra, dec, raz, decz, &xi, &eta);
+
+   vvd(xi, -0.01753200983236980595, 1e-15, "iauTpxes", "xi", status);
+   vvd(eta, 0.05962940005778712891, 1e-15, "iauTpxes", "eta", status);
+
+   viv(j, 0, "iauTpxes", "j", status);
+
+}
+
+static void t_tpxev(int *status)
+/*
+**  - - - - - - - -
+**   t _ t p x e v
+**  - - - - - - - -
+**
+**  Test iauTpxev function.
+**
+**  Returned:
+**     status    int         FALSE = success, TRUE = fail
+**
+**  Called:  iauTpxev, iauS2c, vvd
+**
+**  This revision:  2017 October 21
+*/
+{
+   double ra, dec, raz, decz, v[3], vz[3], xi, eta;
+   int j;
+
+
+   ra = 1.3;
+   dec = 1.55;
+   raz = 2.3;
+   decz = 1.5;
+   iauS2c(ra, dec, v);
+   iauS2c(raz, decz, vz);
+
+   j = iauTpxev(v, vz, &xi, &eta);
+
+   vvd(xi, -0.01753200983236980595, 1e-15, "iauTpxev", "xi", status);
+   vvd(eta, 0.05962940005778712891, 1e-15, "iauTpxev", "eta", status);
+
+   viv(j, 0, "iauTpxev", "j", status);
 
 }
 
@@ -9062,7 +9886,7 @@ int main(int argc, char *argv[])
 **   m a i n
 **  - - - - -
 **
-**  This revision:  2013 October 3
+**  This revision:  2017 October 21
 */
 {
    int status;
@@ -9081,6 +9905,7 @@ int main(int argc, char *argv[])
    t_a2af(&status);
    t_a2tf(&status);
    t_ab(&status);
+   t_ae2hd(&status);
    t_af2a(&status);
    t_anp(&status);
    t_anpm(&status);
@@ -9136,6 +9961,8 @@ int main(int argc, char *argv[])
    t_dat(&status);
    t_dtdb(&status);
    t_dtf2d(&status);
+   t_eceq06(&status);
+   t_ecm06(&status);
    t_ee00(&status);
    t_ee00a(&status);
    t_ee00b(&status);
@@ -9149,6 +9976,7 @@ int main(int argc, char *argv[])
    t_epj(&status);
    t_epj2jd(&status);
    t_epv00(&status);
+   t_eqec06(&status);
    t_eqeq94(&status);
    t_era00(&status);
    t_fad03(&status);
@@ -9165,7 +9993,11 @@ int main(int argc, char *argv[])
    t_fasa03(&status);
    t_faur03(&status);
    t_fave03(&status);
+   t_fk425(&status);
+   t_fk45z(&status);
+   t_fk524(&status);
    t_fk52h(&status);
+   t_fk54z(&status);
    t_fk5hip(&status);
    t_fk5hz(&status);
    t_fw2m(&status);
@@ -9184,6 +10016,8 @@ int main(int argc, char *argv[])
    t_gst06a(&status);
    t_gst94(&status);
    t_h2fk5(&status);
+   t_hd2ae(&status);
+   t_hd2pa(&status);
    t_hfk5z(&status);
    t_icrs2g(&status);
    t_ir(&status);
@@ -9192,6 +10026,13 @@ int main(int argc, char *argv[])
    t_ld(&status);
    t_ldn(&status);
    t_ldsun(&status);
+   t_lteceq(&status);
+   t_ltecm(&status);
+   t_lteqec(&status);
+   t_ltp(&status);
+   t_ltpb(&status);
+   t_ltpecl(&status);
+   t_ltpequ(&status);
    t_num00a(&status);
    t_num00b(&status);
    t_num06a(&status);
@@ -9280,6 +10121,12 @@ int main(int argc, char *argv[])
    t_tdbtt(&status);
    t_tf2a(&status);
    t_tf2d(&status);
+   t_tpors(&status);
+   t_tporv(&status);
+   t_tpsts(&status);
+   t_tpstv(&status);
+   t_tpxes(&status);
+   t_tpxev(&status);
    t_tr(&status);
    t_trxp(&status);
    t_trxpv(&status);
@@ -9308,3 +10155,98 @@ int main(int argc, char *argv[])
    }
    return status;
 }
+/*----------------------------------------------------------------------
+**
+**  Copyright (C) 2019
+**  Standards Of Fundamental Astronomy Board
+**  of the International Astronomical Union.
+**
+**  =====================
+**  SOFA Software License
+**  =====================
+**
+**  NOTICE TO USER:
+**
+**  BY USING THIS SOFTWARE YOU ACCEPT THE FOLLOWING SIX TERMS AND
+**  CONDITIONS WHICH APPLY TO ITS USE.
+**
+**  1. The Software is owned by the IAU SOFA Board ("SOFA").
+**
+**  2. Permission is granted to anyone to use the SOFA software for any
+**     purpose, including commercial applications, free of charge and
+**     without payment of royalties, subject to the conditions and
+**     restrictions listed below.
+**
+**  3. You (the user) may copy and distribute SOFA source code to others,
+**     and use and adapt its code and algorithms in your own software,
+**     on a world-wide, royalty-free basis.  That portion of your
+**     distribution that does not consist of intact and unchanged copies
+**     of SOFA source code files is a "derived work" that must comply
+**     with the following requirements:
+**
+**     a) Your work shall be marked or carry a statement that it
+**        (i) uses routines and computations derived by you from
+**        software provided by SOFA under license to you; and
+**        (ii) does not itself constitute software provided by and/or
+**        endorsed by SOFA.
+**
+**     b) The source code of your derived work must contain descriptions
+**        of how the derived work is based upon, contains and/or differs
+**        from the original SOFA software.
+**
+**     c) The names of all routines in your derived work shall not
+**        include the prefix "iau" or "sofa" or trivial modifications
+**        thereof such as changes of case.
+**
+**     d) The origin of the SOFA components of your derived work must
+**        not be misrepresented;  you must not claim that you wrote the
+**        original software, nor file a patent application for SOFA
+**        software or algorithms embedded in the SOFA software.
+**
+**     e) These requirements must be reproduced intact in any source
+**        distribution and shall apply to anyone to whom you have
+**        granted a further right to modify the source code of your
+**        derived work.
+**
+**     Note that, as originally distributed, the SOFA software is
+**     intended to be a definitive implementation of the IAU standards,
+**     and consequently third-party modifications are discouraged.  All
+**     variations, no matter how minor, must be explicitly marked as
+**     such, as explained above.
+**
+**  4. You shall not cause the SOFA software to be brought into
+**     disrepute, either by misuse, or use for inappropriate tasks, or
+**     by inappropriate modification.
+**
+**  5. The SOFA software is provided "as is" and SOFA makes no warranty
+**     as to its use or performance.   SOFA does not and cannot warrant
+**     the performance or results which the user may obtain by using the
+**     SOFA software.  SOFA makes no warranties, express or implied, as
+**     to non-infringement of third party rights, merchantability, or
+**     fitness for any particular purpose.  In no event will SOFA be
+**     liable to the user for any consequential, incidental, or special
+**     damages, including any lost profits or lost savings, even if a
+**     SOFA representative has been advised of such damages, or for any
+**     claim by any third party.
+**
+**  6. The provision of any version of the SOFA software under the terms
+**     and conditions specified herein does not imply that future
+**     versions will also be made available under the same terms and
+**     conditions.
+*
+**  In any published work or commercial product which uses the SOFA
+**  software directly, acknowledgement (see www.iausofa.org) is
+**  appreciated.
+**
+**  Correspondence concerning SOFA software should be addressed as
+**  follows:
+**
+**      By email:  sofa@ukho.gov.uk
+**      By post:   IAU SOFA Center
+**                 HM Nautical Almanac Office
+**                 UK Hydrographic Office
+**                 Admiralty Way, Taunton
+**                 Somerset, TA1 2DN
+**                 United Kingdom
+**
+**--------------------------------------------------------------------*/

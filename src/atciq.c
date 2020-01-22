@@ -71,12 +71,13 @@ void iauAtciq(double rc, double dc,
 **
 **  This revision:   2013 October 9
 **
-**  SOFA release 2015-02-09
+**  SOFA release 2019-07-22
 **
-**  Copyright (C) 2015 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2019 IAU SOFA Board.  See notes at end.
 */
 {
    double pco[3], pnat[3], ppr[3], pi[3], w;
+
 
 /* Proper motion and parallax, giving BCRS coordinate direction. */
    iauPmpx(rc, dc, pr, pd, px, rv, astrom->pmt, astrom->eb, pco);
@@ -98,7 +99,7 @@ void iauAtciq(double rc, double dc,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2015
+**  Copyright (C) 2019
 **  Standards Of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
@@ -191,5 +192,4 @@ void iauAtciq(double rc, double dc,
 **                 United Kingdom
 **
 **--------------------------------------------------------------------*/
-
 }

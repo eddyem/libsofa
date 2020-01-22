@@ -148,14 +148,15 @@ int iauAtoc13(const char *type, double ob1, double ob2,
 **
 **  This revision:   2013 October 9
 **
-**  SOFA release 2015-02-09
+**  SOFA release 2019-07-22
 **
-**  Copyright (C) 2015 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2019 IAU SOFA Board.  See notes at end.
 */
 {
    int j;
    iauASTROM astrom;
    double eo, ri, di;
+
 
 /* Star-independent astrometry parameters. */
    j = iauApco13(utc1, utc2, dut1, elong, phi, hm, xp, yp,
@@ -177,7 +178,7 @@ int iauAtoc13(const char *type, double ob1, double ob2,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2015
+**  Copyright (C) 2019
 **  Standards Of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
@@ -270,5 +271,4 @@ int iauAtoc13(const char *type, double ob1, double ob2,
 **                 United Kingdom
 **
 **--------------------------------------------------------------------*/
-
 }

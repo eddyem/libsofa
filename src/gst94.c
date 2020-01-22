@@ -69,12 +69,13 @@ double iauGst94(double uta, double utb)
 **
 **  This revision:  2008 May 16
 **
-**  SOFA release 2015-02-09
+**  SOFA release 2019-07-22
 **
-**  Copyright (C) 2015 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2019 IAU SOFA Board.  See notes at end.
 */
 {
    double gmst82, eqeq94, gst;
+
 
    gmst82 = iauGmst82(uta, utb);
    eqeq94 = iauEqeq94(uta, utb);
@@ -84,7 +85,7 @@ double iauGst94(double uta, double utb)
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2015
+**  Copyright (C) 2019
 **  Standards Of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **

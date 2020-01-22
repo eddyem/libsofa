@@ -39,18 +39,19 @@ int iauUt1tt(double ut11, double ut12, double dt,
 **     Explanatory Supplement to the Astronomical Almanac,
 **     P. Kenneth Seidelmann (ed), University Science Books (1992)
 **
-**  This revision:  2013 June 18
+**  This revision:  2019 June 20
 **
-**  SOFA release 2015-02-09
+**  SOFA release 2019-07-22
 **
-**  Copyright (C) 2015 IAU SOFA Board.  See notes at end.
+**  Copyright (C) 2019 IAU SOFA Board.  See notes at end.
 */
 {
    double dtd;
 
+
 /* Result, safeguarding precision. */
    dtd = dt / DAYSEC;
-   if ( ut11 > ut12 ) {
+   if ( fabs(ut11) > fabs(ut12) ) {
       *tt1 = ut11;
       *tt2 = ut12 + dtd;
    } else {
@@ -63,7 +64,7 @@ int iauUt1tt(double ut11, double ut12, double dt,
 
 /*----------------------------------------------------------------------
 **
-**  Copyright (C) 2015
+**  Copyright (C) 2019
 **  Standards Of Fundamental Astronomy Board
 **  of the International Astronomical Union.
 **
